@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,8 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Button
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.Column
+
 
 
 class MainActivity : ComponentActivity() {
@@ -27,11 +34,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CalendarAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                var userName by remember { mutableStateOf<String?>(null) }
+
+                if (userName == null) {
+                    AskName(onSubmit = { submittedName ->
+                        userName = submittedName
+                    })
+                } else {
+                    Greeting(name = userName!!)
                 }
             }
         }
@@ -53,6 +63,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
@@ -60,3 +72,20 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
+@Composable
+fun AskName(onSubmit: (String) -> Unit) {
+    var name by remember { mutableStateOf("") }
+
+    Column {
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Enter your name") }
+        )
+        Button(onClick = { onSubmit(name) }) {
+            Text("Submit")
+        }
+    }
+}
+
