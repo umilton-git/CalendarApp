@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.graphics.Brush
+import java.time.YearMonth
 
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +45,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+    // Create instance of CalendarData
+    val calendarData = remember { CalendarData() }
+
+    // Get current month
+    val currentMonth = YearMonth.now()
+
+    // Generate days in month
+    val daysInMonth = remember { calendarData.generateMonth(currentMonth) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,10 +67,17 @@ fun MainScreen() {
                     endY = 500f  // Large enough so grey dominates
                 )
             )
+            .padding(16.dp)
     ) {
-        // You can add content here if needed
+        // TEMP: Display first date as proof of data working
+        Text(
+            text = "First day: ${daysInMonth.first().date}",
+            color = Color.White,
+            fontSize = 20.sp
+        )
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

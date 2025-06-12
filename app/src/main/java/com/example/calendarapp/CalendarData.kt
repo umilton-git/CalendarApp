@@ -14,5 +14,4 @@ class CalendarData {
             CalendarDay(date = month.atDay(day))
         }
     }
-
 }
