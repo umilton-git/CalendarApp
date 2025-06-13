@@ -27,8 +27,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import java.time.YearMonth
+import java.time.LocalDate
 
 
 class MainActivity : ComponentActivity() {
@@ -49,12 +51,21 @@ fun MainScreen() {
     val calendarData = remember { CalendarData() }
 
     // Get current month
-    val currentMonth = YearMonth.now()
+    val currentDate by remember {
+        mutableStateOf(LocalDate.now())
+    }
+
+// Then get currentMonth from this:
+    val currentMonth = YearMonth.from(currentDate)
+
+    val monthName = currentMonth.month.name.lowercase()
+        .replaceFirstChar { it.uppercase() }
 
     // Generate days in month
     val daysInMonth = remember { calendarData.generateMonth(currentMonth) }
 
     Box(
+        contentAlignment = Alignment.TopCenter,
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -67,13 +78,12 @@ fun MainScreen() {
                     endY = 500f  // Large enough so grey dominates
                 )
             )
-            .padding(16.dp)
+            .padding(16.dp, vertical = 45.dp)
     ) {
         // TEMP: Display first date as proof of data working
         Text(
-            text = "First day: ${daysInMonth.first().date}",
+            text = monthName.toString(),
             color = Color.White,
-            fontSize = 20.sp
         )
     }
 }
