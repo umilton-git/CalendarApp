@@ -18,12 +18,20 @@ class CalendarData {
     fun generateCalendarCells(month: YearMonth): List<LocalDate?> {
         val days = mutableListOf<LocalDate?>()
         val firstDay = month.atDay(1)
-        val firstWeekday = firstDay.dayOfWeek.value % 7 // Sunday = 0
+        val offset = when (firstDay.dayOfWeek) {
+            DayOfWeek.SUNDAY -> 0
+            DayOfWeek.MONDAY -> 1
+            DayOfWeek.TUESDAY -> 2
+            DayOfWeek.WEDNESDAY -> 3
+            DayOfWeek.THURSDAY -> 4
+            DayOfWeek.FRIDAY -> 5
+            DayOfWeek.SATURDAY -> 6
+        }
 
-        // Add blanks before the first day
-        repeat(firstWeekday) { days.add(null) }
+        // Insert nulls to pad the first week
+        repeat(offset) { days.add(null) }
 
-        // Add real days
+        // Add actual days
         val totalDays = month.lengthOfMonth()
         for (i in 1..totalDays) {
             days.add(month.atDay(i))
@@ -31,4 +39,5 @@ class CalendarData {
 
         return days
     }
+
 }

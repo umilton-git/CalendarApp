@@ -25,6 +25,12 @@ import com.example.calendarapp.ui.theme.CalendarAppTheme
 import java.time.LocalDate
 import java.time.YearMonth
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Icon
+
 
 
 class MainActivity : ComponentActivity() {
@@ -43,13 +49,13 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val calendarData = remember { CalendarData() }
 
-    val currentDate by remember { mutableStateOf(LocalDate.now()) }
-    val currentMonth = YearMonth.from(currentDate)
+    var selectedMonth by remember { mutableStateOf(YearMonth.now()) }
 
-    val monthName = currentMonth.month.name.lowercase()
+    val monthName = selectedMonth.month.name.lowercase()
         .replaceFirstChar { it.uppercase() }
 
-    val calendarCells = remember { calendarData.generateCalendarCells(currentMonth) }
+    val calendarCells = calendarData.generateCalendarCells(selectedMonth)
+
 
     // 🔲 Main container for background and layout
     Column(
@@ -68,16 +74,50 @@ fun MainScreen() {
             .padding(26.dp) // Padding around the whole screen content
     ) {
         // 🟦 MONTH TITLE BAR
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = monthName,
-                color = Color.White,
-                fontSize = 28.sp
-            )
+            // ← Prev Month Button
+            TextButton(
+                onClick = { selectedMonth = selectedMonth.minusMonths(1) },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Previous")
+            }
+
+            // 📅 Month Name in Center
+            Box(
+                modifier = Modifier
+                    .weight(3f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = monthName,
+                    color = Color.White,
+                    fontSize = 28.sp
+                )
+            }
+
+            // → Next Month Button
+            TextButton(
+                onClick = { selectedMonth = selectedMonth.plusMonths(1) },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Next")
+            }
         }
+
 
         // ⬜ Space between month title and calendar grid
         Spacer(modifier = Modifier.height(30.dp))
